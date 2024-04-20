@@ -1,5 +1,8 @@
+using AC4.Persistence.DAO;
 using GestioAigua;
 using System.Text.RegularExpressions;
+using AC4.Persistence.Mapping;
+using AC4.Persistence.Utils;
 using System.Windows.Forms;
 using System.Xml;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -74,8 +77,7 @@ namespace AC4
             }
             else
             {
-                
-
+                IRecordDAO recordDAO = new RecordDAO(NpgsqlUtils.OpenConnection());
 
                 Record record = new Record();
                 record.Any = (int)cbAny.SelectedItem;
@@ -96,9 +98,19 @@ namespace AC4
                 errorComarca.Clear();
                 errorAny.Clear();
                 errorPoblacio.Clear();
-                RecordCRUD recordCRUD = new RecordCRUD();
+                try
+                {
+                    recordDAO.AddRecord(record);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                /*RecordCRUD recordCRUD = new RecordCRUD();
                 recordCRUD.InsertRecord(record);
+                */
                 Helper.CsvToXml();
+                
             }
         }
 
